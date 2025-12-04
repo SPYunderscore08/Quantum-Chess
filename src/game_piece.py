@@ -1,16 +1,16 @@
 from enum import Enum
 
 class Piece:
-    id = 0
-    x = 0
-    y = 0
+    id:int
+    x:int
+    y:int
 
-    def __init__(self, piece_id, x, y):
+    def __init__(self, piece_id:int, x:int, y:int):
         self.id = piece_id
         self.x = x
         self.y = y
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         self.x = x
         self.y = y
 
@@ -21,17 +21,17 @@ class Pawn(Piece):
         DIAGONAL_LEFT = 1
         DIAGONAL_RIGHT = 2
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
 
-    def en_passant(self, x, y):
+    def en_passant(self, x:int, y:int):
         pass
 
-    def promote(self, x): # todo might pass new piece directly
+    def promote(self, x:int): # todo might pass new piece directly
         pass
 
 class Knight(Piece):
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
 
 
@@ -42,7 +42,7 @@ class Bishop(Piece):
         DIAGONAL_RIGHT_UP = 2
         DIAGONAL_RIGHT_DOWN = 3
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
 
 class Rook(Piece):
@@ -52,10 +52,10 @@ class Rook(Piece):
         LEFT = 2
         RIGHT = 3
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
 
-    def castle(self, x, y):
+    def castle(self, x:int, y:int):
         pass
 
 class Queen(Piece):
@@ -69,7 +69,7 @@ class Queen(Piece):
         DIAGONAL_RIGHT_UP = 6
         DIAGONAL_RIGHT_DOWN = 7
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
 
 
@@ -84,5 +84,5 @@ class King(Piece):
         DIAGONAL_RIGHT_UP = 6
         DIAGONAL_RIGHT_DOWN = 7
 
-    def move(self, x, y):
+    def move(self, x:int, y:int):
         pass
