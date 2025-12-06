@@ -1,9 +1,9 @@
-from game_board import *
+from game import *
 
 def main():
-    game = Board()
+    game = Game()
 
-    game.start_game()
+    game.start()
 
 if __name__ == '__main__':
     main()
