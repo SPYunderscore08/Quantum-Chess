@@ -41,5 +41,9 @@ def main():
     game.black.move_piece(23, 7, 2)
     game.print_board()
 
+    game.black.move_piece(23, 6, 1)
+    game.print_board()
+
+
 if __name__ == '__main__':
     main()

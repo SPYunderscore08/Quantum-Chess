@@ -65,7 +65,14 @@ class Pawn(Piece):
         if x == self.x and y == self.y:  # todo might get changed; depending on if splitting allows this
             return False  # Cannot put piece where piece stood
 
-        elif (x < 1 or x > 8) or (y < 1 or y > 8):
+        if self.side:
+            if y <= self.y:  # todo might get changed; depending on if splitting allows this
+                return False
+        else:
+            if y >= self.y:  # todo might get changed; depending on if splitting allows this
+                return False
+
+        if (x < 1 or x > 8) or (y < 1 or y > 8):
             return False # Out of bounds
 
         elif not (abs(y - self.y) == 1 or (abs(y - self.y) == 2 and self.y == (2 if self.side else 7))): # todo might be wrong
@@ -95,9 +102,7 @@ class Pawn(Piece):
                     return True
 
         else: # JANK
-            print(range(self.y, y, -1))
             for i in range(self.y, y, -1):
-                print(i)
                 if issubclass(type(self.board[i - 2][x - 1]), Piece):
                     return True
 
