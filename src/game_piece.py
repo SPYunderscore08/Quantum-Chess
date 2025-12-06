@@ -1,14 +1,15 @@
-from game import *
-
 class Piece:
-    def __init__(self, piece_id:int, x:int, y:int, side:bool):
+    def __init__(self, piece_id:int, x:int, y:int, side:bool, board:list):
         self.piece_id = piece_id
         self.x = x
         self.y = y
         self.side = side
+        self.board = board
 
     def move(self, x:int, y:int):
         if self.check_validity(x, y):
+            self.board[y][x] = self
+            self.board[self.y][self.x] = "None"
             self.x = x
             self.y = y
         else:
@@ -29,13 +30,26 @@ class Pawn(Piece):
                     if valid capture
                     else raise/false
             """
+            if not self.is_valid_coordinate(x, y):
+                print("Invalid Coordinate")
+                return False
+            elif self.puts_king_in_check(x, y):
+                print("Puts King in Check")
+                return False
+            elif self.path_blocked(x, y):
+                print("Path is Blocked")
+                return False
+
             return True
         else:
             if not self.is_valid_coordinate(x, y):
+                print("Invalid Coordinate")
                 return False
             elif self.puts_king_in_check(x, y):
+                print("Puts King in Check")
                 return False
             elif self.path_blocked(x, y):
+                print("Path is Blocked")
                 return False
 
             return True
@@ -51,7 +65,7 @@ class Pawn(Piece):
             return False
 
         elif x != self.x:
-            return self.can_capture()
+            return self.can_capture(x, y)
 
         return True
 
@@ -60,18 +74,19 @@ class Pawn(Piece):
         return False
 
     def path_blocked(self, x:int, y:int):
-        path:list = [
+        """path:list = [
             Game.board[self.y + 1][self.x],
             Game.board[self.y + 2][self.x]
-        ]
+        ]"""
 
         for i in range(self.x, x - self.x):
-            if issubclass(Game.board[y][i], Piece):
+            if issubclass(type(self.board[y][i]), Piece):
                 return True
 
         return False
 
-    def can_capture
+    def can_capture(self, x:int, y:int):
+        return True if issubclass(type(self.board[y][x]), Piece) else False
 
     def promote(self, x:int): # todo might pass new piece directly
         pass
