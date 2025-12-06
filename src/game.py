@@ -49,6 +49,6 @@ class Game:
         for row in self.board:
             for item in row:
                 print((type(item)).__name__[:2] + str(item.piece_id), end=" ") if not item == None else print(" ", end=" ")
-            print()
+            print("|")
         print("-" * 23)
 #

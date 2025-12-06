@@ -26,52 +26,40 @@ class Pawn(Piece):
         if self.check_validity(x, y):
             self.board[y - 1][x - 1] = self
             if self.does_en_passant:
-                self.board[y - 2][x - 1] = None
+                self.board[(y - 2) if self.side else (y + 1)][x - 1] = None
                 self.does_en_passant = False
+
             self.board[self.y - 1][self.x - 1] = None
+
             self.x = x
             self.y = y
-            if self.y == 8:
+            if self.y == 8 if self.side else 1:
                 self.promote()
         else:
             raise Exception("Invalid Move!")
 
     def check_validity(self, x:int, y:int):
-        if self.side:
-            """
-                if out of range of moves
-                    if pawn at square 2
-                    else raise/false
-                if puts king into check
-                if piece where coords
-                    if valid capture
-                    else raise/false
-            """
-            if not self.is_valid_coordinate(x, y):
-                print("Invalid Coordinate")
+        """
+            if out of range of moves
+                if pawn at square 2
+                else raise/false
+            if puts king into check
+            if piece where coords
+                if valid capture
+                else raise/false
+        """
+        if not self.is_valid_coordinate(x, y):
+            print("Invalid Coordinate")
+            return False
+        elif not self.can_capture(x, y):
+            if self.puts_king_in_check(x, y):
+                print("Puts King in Check")
                 return False
-            elif not self.can_capture(x, y):
-                if self.puts_king_in_check(x, y):
-                    print("Puts King in Check")
-                    return False
-                elif self.path_blocked(x, y):
-                    print("Path is Blocked")
-                    return False
-
-            return True
-        else:
-            if not self.is_valid_coordinate(x, y):
-                print("Invalid Coordinate")
+            elif self.path_blocked(x, y):
+                print("Path is Blocked")
                 return False
-            elif not self.can_capture(x, y):
-                if self.puts_king_in_check(x, y):
-                    print("Puts King in Check")
-                    return False
-                elif self.path_blocked(x, y):
-                    print("Path is Blocked")
-                    return False
 
-            return True
+        return True
 
     def is_valid_coordinate(self, x:int, y:int):
         if x == self.x and y == self.y:  # todo might get changed; depending on if splitting allows this
@@ -80,11 +68,14 @@ class Pawn(Piece):
         elif (x < 1 or x > 8) or (y < 1 or y > 8):
             return False # Out of bounds
 
-        elif not (y - self.y == 1 or (y - self.y == 2 and self.y == 2)): # todo might be wrong
+        elif not (abs(y - self.y) == 1 or (abs(y - self.y) == 2 and self.y == (2 if self.side else 7))): # todo might be wrong
+            return False
+
+        elif abs(self.x - x) > 1:
             return False
 
         self.is_en_passant_able = False
-        if y - self.y == 2 and self.y == 2:
+        if abs(y - self.y) == 2 and self.y == (2 if self.side else 7):
             self.is_en_passant_able = True
 
         return True
@@ -98,16 +89,25 @@ class Pawn(Piece):
             Game.board[self.y + 1][self.x],
             Game.board[self.y + 2][self.x]
         ]"""
-        for i in range(self.y, y):
-            if issubclass(type(self.board[i][x]), Piece):
-                return True
+        if self.side:
+            for i in range(self.y, y):
+                if issubclass(type(self.board[i][x - 1]), Piece):
+                    return True
+
+        else: # JANK
+            print(range(self.y, y, -1))
+            for i in range(self.y, y, -1):
+                print(i)
+                if issubclass(type(self.board[i - 2][x - 1]), Piece):
+                    return True
 
         return False
 
     def can_capture(self, x:int, y:int):
         if issubclass(type(self.board[y - 1][x - 1]), Piece) and abs(self.x - x) == 1:
             return True
-        elif type(self.board[y - 2][x - 1]) == Pawn and self.board[y - 2][x - 1].is_en_passant_able:
+
+        elif type(self.board[(y - 2) if self.side else (y + 1)][x - 1]) == Pawn and self.board[(y - 2) if self.side else (y + 1)][x - 1].is_en_passant_able:
             self.does_en_passant = True
             return True
         return False
