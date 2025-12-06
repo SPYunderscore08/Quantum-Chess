@@ -27,9 +27,12 @@ class Pawn(Piece):
             self.board[y - 1][x - 1] = self
             if self.does_en_passant:
                 self.board[y - 2][x - 1] = None
+                self.does_en_passant = False
             self.board[self.y - 1][self.x - 1] = None
             self.x = x
             self.y = y
+            if self.y == 8:
+                self.promote()
         else:
             raise Exception("Invalid Move!")
 
@@ -109,8 +112,9 @@ class Pawn(Piece):
             return True
         return False
 
-    def promote(self, x:int): # todo might pass new piece directly
-        pass
+    def promote(self): # todo might pass new piece directly
+        print("Please Promote")
+
 
 class Knight(Piece):
     def check_validity(self, x:int, y:int) -> bool:
