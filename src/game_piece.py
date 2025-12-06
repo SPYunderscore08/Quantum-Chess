@@ -8,8 +8,8 @@ class Piece:
 
     def move(self, x:int, y:int):
         if self.check_validity(x, y):
-            self.board[y][x] = self
-            self.board[self.y][self.x] = "None"
+            self.board[y - 1][x - 1] = self
+            self.board[self.y - 1][self.x - 1] = None
             self.x = x
             self.y = y
         else:
@@ -33,24 +33,26 @@ class Pawn(Piece):
             if not self.is_valid_coordinate(x, y):
                 print("Invalid Coordinate")
                 return False
-            elif self.puts_king_in_check(x, y):
-                print("Puts King in Check")
-                return False
-            elif self.path_blocked(x, y):
-                print("Path is Blocked")
-                return False
+            elif not self.can_capture(x, y):
+                if self.puts_king_in_check(x, y):
+                    print("Puts King in Check")
+                    return False
+                elif self.path_blocked(x, y):
+                    print("Path is Blocked")
+                    return False
 
             return True
         else:
             if not self.is_valid_coordinate(x, y):
                 print("Invalid Coordinate")
                 return False
-            elif self.puts_king_in_check(x, y):
-                print("Puts King in Check")
-                return False
-            elif self.path_blocked(x, y):
-                print("Path is Blocked")
-                return False
+            elif not self.can_capture(x, y):
+                if self.puts_king_in_check(x, y):
+                    print("Puts King in Check")
+                    return False
+                elif self.path_blocked(x, y):
+                    print("Path is Blocked")
+                    return False
 
             return True
 
@@ -64,8 +66,6 @@ class Pawn(Piece):
         elif not (y - self.y == 1 or (y - self.y == 2 and self.y == 2)): # todo might be wrong
             return False
 
-        elif x != self.x:
-            return self.can_capture(x, y)
 
         return True
 
@@ -78,15 +78,14 @@ class Pawn(Piece):
             Game.board[self.y + 1][self.x],
             Game.board[self.y + 2][self.x]
         ]"""
-
-        for i in range(self.x, x - self.x):
-            if issubclass(type(self.board[y][i]), Piece):
+        for i in range(self.y, y):
+            if issubclass(type(self.board[i][x]), Piece):
                 return True
 
         return False
 
     def can_capture(self, x:int, y:int):
-        return True if issubclass(type(self.board[y][x]), Piece) else False
+        return True if issubclass(type(self.board[y - 1][x - 1]), Piece) and abs(self.x - x) == 1 else False # todo mayble wrong
 
     def promote(self, x:int): # todo might pass new piece directly
         pass

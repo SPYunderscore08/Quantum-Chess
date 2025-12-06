@@ -9,6 +9,5 @@ class Player:
             for j in range(len(self.board[i])):
                 if issubclass(type(self.board[i][j]), Piece):
                     if self.board[i][j].piece_id == piece_id:
-                        print(type(self.board[i][j]))
                         self.board[i][j].move(x, y)
                         return
