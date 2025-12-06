@@ -19,6 +19,20 @@ class Piece:
         return True
 
 class Pawn(Piece):
+    is_en_passant_able:bool = False
+    does_en_passant:bool = False
+
+    def move(self, x:int, y:int):
+        if self.check_validity(x, y):
+            self.board[y - 1][x - 1] = self
+            if self.does_en_passant:
+                self.board[y - 2][x - 1] = None
+            self.board[self.y - 1][self.x - 1] = None
+            self.x = x
+            self.y = y
+        else:
+            raise Exception("Invalid Move!")
+
     def check_validity(self, x:int, y:int):
         if self.side:
             """
@@ -66,6 +80,9 @@ class Pawn(Piece):
         elif not (y - self.y == 1 or (y - self.y == 2 and self.y == 2)): # todo might be wrong
             return False
 
+        self.is_en_passant_able = False
+        if y - self.y == 2 and self.y == 2:
+            self.is_en_passant_able = True
 
         return True
 
@@ -85,7 +102,12 @@ class Pawn(Piece):
         return False
 
     def can_capture(self, x:int, y:int):
-        return True if issubclass(type(self.board[y - 1][x - 1]), Piece) and abs(self.x - x) == 1 else False # todo mayble wrong
+        if issubclass(type(self.board[y - 1][x - 1]), Piece) and abs(self.x - x) == 1:
+            return True
+        elif type(self.board[y - 2][x - 1]) == Pawn and self.board[y - 2][x - 1].is_en_passant_able:
+            self.does_en_passant = True
+            return True
+        return False
 
     def promote(self, x:int): # todo might pass new piece directly
         pass
