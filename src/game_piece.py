@@ -22,6 +22,9 @@ class Piece:
         pass # todo actually check state of game/state
         return False
 
+    def path_blocked(self, x: int, y: int) -> bool:
+        return False
+
 class Pawn(Piece):
     is_en_passant_able:bool = False
     does_en_passant:bool = False
@@ -149,6 +152,11 @@ class King(Piece):
             print("Invalid Coordinate")
             return False
 
+        elif self.path_blocked(x, y):
+            if not self.can_capture(x, y):
+                print("Cannot capture own pieces")
+                return False
+
         if self.puts_king_in_check(x, y):
             print("Puts King in Check")
             return False
@@ -166,6 +174,16 @@ class King(Piece):
             return False
 
         return True
+
+    def path_blocked(self, x: int, y: int) -> bool:
+        if issubclass(type(self.board[y - 1][x - 1]), Piece):
+            return True
+        return False
+
+    def can_capture(self, x:int, y:int) -> bool:
+        if self.board[y - 1][x - 1].side != self.side:
+            return True
+        return False
 
     def can_castle(self, x, y):
         pass
