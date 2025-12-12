@@ -22,6 +22,12 @@ class Piece:
         pass # todo actually check state of game/state
         return False
 
+
+    def can_capture(self, x:int, y:int) -> bool:
+        if self.board[y - 1][x - 1].side != self.side:
+            return True
+        return False
+
     def path_blocked(self, x: int, y: int) -> bool:
         return False
 
@@ -33,13 +39,14 @@ class Pawn(Piece):
         if self.check_validity(x, y):
             self.board[y - 1][x - 1] = self
             if self.does_en_passant:
-                self.board[(y - 2) if self.side else (y + 1)][x - 1] = None
+                self.board[(y - 2) if self.side else (y - 1)][x - 1] = None
                 self.does_en_passant = False
 
             self.board[self.y - 1][self.x - 1] = None
 
             self.x = x
             self.y = y
+
             if self.y == 8 if self.side else 1:
                 self.promote()
         else:
@@ -105,12 +112,12 @@ class Pawn(Piece):
         ]"""
         if self.side:
             for i in range(self.y, y):
-                if issubclass(type(self.board[i][x - 1]), Piece):
+                if issubclass(type(self.board[i][self.x - 1]), Piece):
                     return True
 
         else: # JANK
             for i in range(self.y, y, -1):
-                if issubclass(type(self.board[i - 2][x - 1]), Piece):
+                if issubclass(type(self.board[i - 2][self.x - 1]), Piece):
                     return True
 
         return False
@@ -119,7 +126,8 @@ class Pawn(Piece):
         if issubclass(type(self.board[y - 1][x - 1]), Piece) and self.board[y - 1][x - 1].side != self.side and abs(self.x - x) == 1:
             return True
 
-        elif type(self.board[(y - 2) if self.side else (y + 1)][x - 1]) == Pawn and self.board[(y - 2) if self.side else (y + 1)][x - 1].is_en_passant_able:
+        elif type(self.board[(y - 2) if self.side else (y)][x - 1]) == Pawn and self.board[(y - 2) if self.side else (y)][x - 1].is_en_passant_able:
+            print(self.board[y - 1][x - 1])
             self.does_en_passant = True
             return True
         return False
@@ -177,11 +185,6 @@ class King(Piece):
 
     def path_blocked(self, x: int, y: int) -> bool:
         if issubclass(type(self.board[y - 1][x - 1]), Piece):
-            return True
-        return False
-
-    def can_capture(self, x:int, y:int) -> bool:
-        if self.board[y - 1][x - 1].side != self.side:
             return True
         return False
 

@@ -45,10 +45,11 @@ class Game:
 
 
     def print_board(self):
-        print("-" * 23)
+        print("-" * 39)
         for row in self.board:
             for item in row:
-                print((type(item)).__name__[:2] + str(item.piece_id), end=" ") if not item == None else print("____", end=" ")
-            print("|")
-        print("-" * 23)
+                piece = str(type(item).__name__[:2])
+                print(piece + str(item.piece_id), end="  " if len(piece + str(item.piece_id)) == 3 else " ") if not item is None else print("____", end=" ")
+            print()
+        print("-" * 39)
 #
